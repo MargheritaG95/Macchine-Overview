@@ -2,25 +2,43 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Controllo Veicoli</title>
+  <title>Macchine Overview</title>
 
   <style>
     * {
       box-sizing: border-box;
     }
 
+    :root {
+      --gold: #b38b3d;
+      --gold-dark: #967329;
+      --black: #171717;
+      --background: #f2f0eb;
+      --white: #ffffff;
+      --text: #1d1d1d;
+      --muted: #777777;
+
+      --green: #17833c;
+      --green-light: #dff3e5;
+
+      --yellow: #d27a00;
+      --yellow-light: #fff0b8;
+
+      --red: #c62828;
+      --red-light: #ffd9d6;
+
+      --neutral: #777777;
+      --neutral-light: #eeeeee;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       font-family: Arial, Helvetica, sans-serif;
-      background: #f2f0eb;
-      color: #1d1d1d;
+      background: var(--background);
+      color: var(--text);
     }
 
     button,
@@ -36,8 +54,8 @@
 
     .hero {
       padding: 35px;
-      background: #171717;
-      color: #ffffff;
+      color: var(--white);
+      background: var(--black);
       border-radius: 22px;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
     }
@@ -46,7 +64,7 @@
       margin: 0 0 8px;
       color: #c9a45b;
       font-size: 13px;
-      font-weight: bold;
+      font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
     }
@@ -80,7 +98,7 @@
     }
 
     .search-input:focus {
-      border-color: #b38b3d;
+      border-color: var(--gold);
     }
 
     .search-button {
@@ -89,14 +107,14 @@
       padding: 0 25px;
       border: 0;
       border-radius: 14px;
-      background: #b38b3d;
-      color: #ffffff;
-      font-weight: bold;
+      background: var(--gold);
+      color: var(--white);
+      font-weight: 700;
       cursor: pointer;
     }
 
     .search-button:hover {
-      background: #9e782f;
+      background: var(--gold-dark);
     }
 
     .search-button:disabled {
@@ -136,13 +154,13 @@
     }
 
     .vehicle-count {
-      color: #777777;
+      color: var(--muted);
       font-size: 14px;
     }
 
     .table-wrapper {
       overflow-x: auto;
-      background: #ffffff;
+      background: var(--white);
       border-radius: 18px;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
     }
@@ -181,87 +199,70 @@
       padding: 0;
       border: 0;
       background: transparent;
-      color: #1d1d1d;
-      font-weight: bold;
+      color: var(--text);
+      font-weight: 700;
       text-align: left;
       text-decoration: underline;
-      text-decoration-color: #b38b3d;
+      text-decoration-color: var(--gold);
       text-underline-offset: 4px;
       cursor: pointer;
     }
 
-    .date-text {
+    .date-text,
+    .telepass-text {
       font-size: 14px;
-      font-weight: bold;
+      font-weight: 700;
       white-space: nowrap;
     }
 
-    .date-text.green {
-      color: #17833c;
+    .green {
+      color: var(--green);
     }
 
-    .date-text.yellow {
-      color: #d27a00;
+    .yellow {
+      color: var(--yellow);
     }
 
-    .date-text.red {
-      color: #c62828;
+    .red {
+      color: var(--red);
     }
 
-    .date-text.neutral {
-      color: #777777;
-    }
-
-    .telepass-text {
-      font-size: 14px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    .telepass-text.green {
-      color: #17833c;
-    }
-
-    .telepass-text.red {
-      color: #c62828;
-    }
-
-    .telepass-text.neutral {
-      color: #777777;
+    .neutral {
+      color: var(--neutral);
     }
 
     .status-pill {
       display: inline-block;
       padding: 7px 11px;
-      border-radius: 20px;
+      border-radius: 999px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 700;
       white-space: nowrap;
     }
 
     .status-pill.green {
-      background: #dff3e5;
       color: #176332;
+      background: var(--green-light);
     }
 
     .status-pill.yellow {
-      background: #fff0b8;
       color: #775500;
+      background: var(--yellow-light);
     }
 
     .status-pill.red {
-      background: #ffd9d6;
       color: #91231e;
+      background: var(--red-light);
     }
 
     .status-pill.neutral {
-      background: #eeeeee;
       color: #555555;
+      background: var(--neutral-light);
     }
 
     .empty-row {
       padding: 30px;
-      color: #777777;
+      color: var(--muted);
       text-align: center;
     }
 
@@ -285,9 +286,8 @@
       position: relative;
       width: min(720px, 100%);
       max-height: 88vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      background: #ffffff;
+      overflow: auto;
+      background: var(--white);
       border-radius: 24px;
       box-shadow: 0 25px 75px rgba(0, 0, 0, 0.4);
     }
@@ -315,7 +315,7 @@
     .vehicle-popup-header {
       position: relative;
       padding: 32px 70px 28px 30px;
-      color: #ffffff;
+      color: var(--white);
     }
 
     .green-popup .vehicle-popup-header {
@@ -355,7 +355,7 @@
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.18);
       font-size: 13px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
     .status-symbol {
@@ -397,8 +397,9 @@
       border: 0;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.22);
-      color: #ffffff;
+      color: var(--white);
       font-size: 25px;
+      line-height: 1;
       cursor: pointer;
     }
 
@@ -417,17 +418,17 @@
 
     .detail-label {
       margin-bottom: 7px;
-      color: #777777;
+      color: var(--muted);
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 700;
       letter-spacing: 0.6px;
       text-transform: uppercase;
     }
 
     .detail-value {
-      color: #1d1d1d;
+      color: var(--text);
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       overflow-wrap: anywhere;
     }
 
@@ -435,36 +436,12 @@
       display: block;
       margin-top: 7px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 700;
       line-height: 1.4;
     }
 
-    .date-note.green {
-      color: #17833c;
-    }
-
-    .date-note.yellow {
-      color: #d27a00;
-    }
-
-    .date-note.red {
-      color: #c62828;
-    }
-
-    .date-note.neutral {
-      color: #777777;
-    }
-
-    .telepass-detail.green {
-      color: #17833c;
-    }
-
-    .telepass-detail.red {
-      color: #c62828;
-    }
-
-    .telepass-detail.neutral {
-      color: #777777;
+    .telepass-detail {
+      font-weight: 700;
     }
 
     .choice-list {
@@ -477,20 +454,20 @@
       padding: 16px;
       border: 1px solid #d7d2c9;
       border-radius: 14px;
-      background: #ffffff;
+      background: var(--white);
       text-align: left;
       cursor: pointer;
     }
 
     .choice-button:hover {
-      border-color: #b38b3d;
+      border-color: var(--gold);
       background: #fbf7ed;
     }
 
     .choice-name {
       display: block;
       font-size: 17px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
     .choice-plate {
@@ -520,7 +497,7 @@
       }
 
       .section-title {
-        align-items: start;
+        align-items: flex-start;
         flex-direction: column;
         gap: 5px;
       }
@@ -545,22 +522,17 @@
 </head>
 
 <body>
-
   <main class="page">
-
     <section class="hero">
-
-      <p class="brand">Cambio Manuale</p>
+      <p class="brand">Macchine Overview</p>
 
       <h1>Controllo veicoli</h1>
 
       <p class="description">
-        Cerca un veicolo per nome o targa.
-        Puoi inserire anche soltanto una parte del nome.
+        Cerca un veicolo per nome o targa. Puoi inserire anche soltanto una parte del nome.
       </p>
 
       <div class="search-container">
-
         <input
           id="searchInput"
           class="search-input"
@@ -577,32 +549,21 @@
         >
           Cerca
         </button>
-
       </div>
 
       <div id="message" class="message">
         Caricamento veicoli...
       </div>
-
     </section>
 
     <section class="section">
-
       <div class="section-title">
-
         <h2>Lista veicoli</h2>
-
-        <span
-          id="vehicleCount"
-          class="vehicle-count"
-        ></span>
-
+        <span id="vehicleCount" class="vehicle-count"></span>
       </div>
 
       <div class="table-wrapper">
-
         <table>
-
           <thead>
             <tr>
               <th>Nome</th>
@@ -623,25 +584,13 @@
               </td>
             </tr>
           </tbody>
-
         </table>
-
       </div>
-
     </section>
-
   </main>
 
-  <div
-    id="modalOverlay"
-    class="modal-overlay"
-  >
-
-    <div
-      id="modalContainer"
-      class="modal"
-    >
-
+  <div id="modalOverlay" class="modal-overlay">
+    <div id="modalContainer" class="modal">
       <button
         id="closeModalButton"
         class="close-button"
@@ -652,9 +601,7 @@
       </button>
 
       <div id="modalContent"></div>
-
     </div>
-
   </div>
 
   <script>
@@ -672,87 +619,52 @@
 
     let vehicles = [];
 
-    const searchInput =
-      document.getElementById("searchInput");
-
-    const searchButton =
-      document.getElementById("searchButton");
-
-    const message =
-      document.getElementById("message");
-
-    const vehicleCount =
-      document.getElementById("vehicleCount");
-
-    const vehicleTableBody =
-      document.getElementById("vehicleTableBody");
-
-    const modalOverlay =
-      document.getElementById("modalOverlay");
-
-    const modalContainer =
-      document.getElementById("modalContainer");
-
-    const modalContent =
-      document.getElementById("modalContent");
-
-    const closeModalButton =
-      document.getElementById("closeModalButton");
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const message = document.getElementById("message");
+    const vehicleCount = document.getElementById("vehicleCount");
+    const vehicleTableBody = document.getElementById("vehicleTableBody");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalContainer = document.getElementById("modalContainer");
+    const modalContent = document.getElementById("modalContent");
+    const closeModalButton = document.getElementById("closeModalButton");
 
     window.addEventListener("load", loadVehicles);
-
     searchButton.addEventListener("click", runSearch);
 
-    searchInput.addEventListener(
-      "keydown",
-      function (event) {
-        if (event.key === "Enter") {
-          runSearch();
-        }
+    searchInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        runSearch();
       }
-    );
+    });
 
-    closeModalButton.addEventListener(
-      "click",
-      closeModal
-    );
+    closeModalButton.addEventListener("click", closeModal);
 
-    modalOverlay.addEventListener(
-      "click",
-      function (event) {
-        if (event.target === modalOverlay) {
-          closeModal();
-        }
+    modalOverlay.addEventListener("click", function (event) {
+      if (event.target === modalOverlay) {
+        closeModal();
       }
-    );
+    });
 
-    document.addEventListener(
-      "keydown",
-      function (event) {
-        if (event.key === "Escape") {
-          closeModal();
-        }
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeModal();
       }
-    );
+    });
 
     async function loadVehicles() {
       message.className = "message";
       message.textContent = "Caricamento veicoli...";
-
       searchButton.disabled = true;
 
       try {
-        const response = await fetch(
-          SHEET_CSV_URL,
-          {
-            cache: "no-store"
-          }
-        );
+        const response = await fetch(SHEET_CSV_URL, {
+          cache: "no-store"
+        });
 
         if (!response.ok) {
           throw new Error(
-            "Risposta Google Sheets non valida: " +
-            response.status
+            "Risposta Google Sheets non valida: " + response.status
           );
         }
 
@@ -771,66 +683,64 @@
         const rows = parseCSV(csvText);
 
         if (rows.length < 2) {
+          throw new Error("Il foglio non contiene righe di dati.");
+        }
+
+        const headers = rows[0].map(cleanHeader);
+
+        const requiredHeaders = [
+          "Nome",
+          "Targa",
+          "Assicurazione",
+          "Revisione",
+          "Tagliando",
+          "Bollo",
+          "Telepass"
+        ];
+
+        const normalizedHeaders = headers.map(normalizeHeader);
+
+        const missingHeaders = requiredHeaders.filter(function (header) {
+          return !normalizedHeaders.includes(normalizeHeader(header));
+        });
+
+        if (missingHeaders.length > 0) {
           throw new Error(
-            "Il foglio non contiene righe di dati."
+            "Mancano queste intestazioni nel foglio: " +
+            missingHeaders.join(", ")
           );
         }
 
-        const headers = rows[0].map(
-          function (header) {
-            return cleanHeader(header);
-          }
-        );
-
         vehicles = rows
           .slice(1)
-          .filter(
-            function (row) {
-              return row.some(
-                function (cell) {
-                  return String(cell || "").trim() !== "";
-                }
-              );
-            }
-          )
-          .map(
-            function (row) {
-              const vehicle = {};
+          .filter(function (row) {
+            return row.some(function (cell) {
+              return String(cell || "").trim() !== "";
+            });
+          })
+          .map(function (row) {
+            const vehicle = {};
 
-              headers.forEach(
-                function (header, index) {
-                  vehicle[header] =
-                    String(row[index] || "").trim();
-                }
-              );
+            headers.forEach(function (header, index) {
+              vehicle[header] = String(row[index] || "").trim();
+            });
 
-              return vehicle;
-            }
-          );
+            return vehicle;
+          });
 
         if (vehicles.length === 0) {
-          throw new Error(
-            "Non sono stati trovati veicoli."
-          );
+          throw new Error("Non sono stati trovati veicoli.");
         }
 
         renderTable();
 
         searchButton.disabled = false;
-
         message.className = "message success";
-
-        message.textContent =
-          vehicles.length + " veicoli caricati.";
-
+        message.textContent = vehicles.length + " veicoli caricati.";
       } catch (error) {
-        console.error(
-          "Errore caricamento veicoli:",
-          error
-        );
+        console.error("Errore caricamento veicoli:", error);
 
         vehicles = [];
-
         vehicleCount.textContent = "0 veicoli";
 
         vehicleTableBody.innerHTML = `
@@ -842,175 +752,118 @@
         `;
 
         message.className = "message error";
-
         message.textContent =
-          "Errore nel caricamento dei dati. Controlla che il foglio sia pubblicato.";
+          "Errore nel caricamento dei dati: " + error.message;
       }
     }
 
     function renderTable() {
       vehicleTableBody.innerHTML = "";
+      vehicleCount.textContent = vehicles.length + " veicoli";
 
-      vehicleCount.textContent =
-        vehicles.length + " veicoli";
+      vehicles.forEach(function (vehicle, index) {
+        const overallStatus = getOverallStatus(vehicle);
 
-      vehicles.forEach(
-        function (vehicle, index) {
-          const overallStatus =
-            getOverallStatus(vehicle);
+        const insurance = getValue(vehicle, "Assicurazione");
+        const revision = getValue(vehicle, "Revisione");
+        const service = getValue(vehicle, "Tagliando");
+        const tax = getValue(vehicle, "Bollo");
+        const telepass = getValue(vehicle, "Telepass");
 
-          const insurance =
-            getValue(vehicle, "Assicurazione");
+        const insuranceStatus = evaluateDate(insurance);
+        const revisionStatus = evaluateDate(revision);
+        const serviceStatus = evaluateDate(service);
+        const taxStatus = evaluateDate(tax);
+        const telepassStatus = evaluateTelepass(telepass);
 
-          const revision =
-            getValue(vehicle, "Revisione");
+        const row = document.createElement("tr");
 
-          const service =
-            getValue(vehicle, "Tagliando");
-
-          const tax =
-            getValue(vehicle, "Bollo");
-
-          const telepass =
-            getValue(vehicle, "Telepass");
-
-          const insuranceStatus =
-            evaluateDate(insurance);
-
-          const revisionStatus =
-            evaluateDate(revision);
-
-          const serviceStatus =
-            evaluateDate(service);
-
-          const taxStatus =
-            evaluateDate(tax);
-
-          const telepassStatus =
-            evaluateTelepass(telepass);
-
-          const row =
-            document.createElement("tr");
-
-          row.innerHTML = `
-            <td>
-              <button
-                class="vehicle-name-button"
-                type="button"
-                data-index="${index}"
-              >
-                ${escapeHTML(
-                  getValue(vehicle, "Nome") ||
-                  "Veicolo senza nome"
-                )}
-              </button>
-            </td>
-
-            <td>
+        row.innerHTML = `
+          <td>
+            <button
+              class="vehicle-name-button"
+              type="button"
+              data-index="${index}"
+            >
               ${escapeHTML(
-                getValue(vehicle, "Targa") ||
-                "—"
+                getValue(vehicle, "Nome") || "Veicolo senza nome"
               )}
-            </td>
+            </button>
+          </td>
 
-            <td>
-              <span class="date-text ${insuranceStatus.level}">
-                ${escapeHTML(insurance || "—")}
-              </span>
-            </td>
+          <td>
+            ${escapeHTML(getValue(vehicle, "Targa") || "—")}
+          </td>
 
-            <td>
-              <span class="date-text ${revisionStatus.level}">
-                ${escapeHTML(revision || "—")}
-              </span>
-            </td>
+          <td>
+            <span class="date-text ${insuranceStatus.level}">
+              ${escapeHTML(insurance || "—")}
+            </span>
+          </td>
 
-            <td>
-              <span class="date-text ${serviceStatus.level}">
-                ${escapeHTML(service || "—")}
-              </span>
-            </td>
+          <td>
+            <span class="date-text ${revisionStatus.level}">
+              ${escapeHTML(revision || "—")}
+            </span>
+          </td>
 
-            <td>
-              <span class="date-text ${taxStatus.level}">
-                ${escapeHTML(tax || "—")}
-              </span>
-            </td>
+          <td>
+            <span class="date-text ${serviceStatus.level}">
+              ${escapeHTML(service || "—")}
+            </span>
+          </td>
 
-            <td>
-              <span class="telepass-text ${telepassStatus.level}">
-                ${escapeHTML(telepass || "—")}
-              </span>
-            </td>
+          <td>
+            <span class="date-text ${taxStatus.level}">
+              ${escapeHTML(tax || "—")}
+            </span>
+          </td>
 
-            <td>
-              <span class="status-pill ${overallStatus.level}">
-                ${escapeHTML(overallStatus.shortLabel)}
-              </span>
-            </td>
-          `;
+          <td>
+            <span class="telepass-text ${telepassStatus.level}">
+              ${escapeHTML(telepass || "—")}
+            </span>
+          </td>
 
-          vehicleTableBody.appendChild(row);
-        }
-      );
+          <td>
+            <span class="status-pill ${overallStatus.level}">
+              ${escapeHTML(overallStatus.shortLabel)}
+            </span>
+          </td>
+        `;
+
+        vehicleTableBody.appendChild(row);
+      });
 
       document
         .querySelectorAll(".vehicle-name-button")
-        .forEach(
-          function (button) {
-            button.addEventListener(
-              "click",
-              function () {
-                const index =
-                  Number(button.dataset.index);
-
-                showVehicleDetails(
-                  vehicles[index]
-                );
-              }
-            );
-          }
-        );
+        .forEach(function (button) {
+          button.addEventListener("click", function () {
+            const index = Number(button.dataset.index);
+            showVehicleDetails(vehicles[index]);
+          });
+        });
     }
 
     function runSearch() {
       if (vehicles.length === 0) {
-        showError(
-          "La lista dei veicoli non è ancora disponibile."
-        );
-
+        showError("La lista dei veicoli non è ancora disponibile.");
         return;
       }
 
-      const query =
-        normalizeText(searchInput.value);
+      const query = normalizeText(searchInput.value);
 
       if (!query) {
-        showError(
-          "Scrivi il nome o la targa del veicolo."
-        );
-
+        showError("Scrivi il nome o la targa del veicolo.");
         return;
       }
 
-      const results = vehicles.filter(
-        function (vehicle) {
-          const name =
-            normalizeText(
-              getValue(vehicle, "Nome")
-            );
+      const results = vehicles.filter(function (vehicle) {
+        const name = normalizeText(getValue(vehicle, "Nome"));
+        const plate = normalizeText(getValue(vehicle, "Targa"));
 
-          const plate =
-            normalizeText(
-              getValue(vehicle, "Targa")
-            );
-
-          return (
-            name.includes(query) ||
-            plate.includes(query)
-          );
-        }
-      );
+        return name.includes(query) || plate.includes(query);
+      });
 
       if (results.length === 0) {
         showError("Nessun veicolo trovato.");
@@ -1018,12 +871,10 @@
       }
 
       message.className = "message success";
-
       message.textContent =
         results.length === 1
           ? "1 veicolo trovato."
-          : results.length +
-            " veicoli trovati.";
+          : results.length + " veicoli trovati.";
 
       if (results.length === 1) {
         showVehicleDetails(results[0]);
@@ -1034,77 +885,55 @@
 
     function showVehicleChoice(results) {
       modalContainer.className = "modal";
-
-      closeModalButton.style.color =
-        "#1d1d1d";
-
-      closeModalButton.style.background =
-        "rgba(0, 0, 0, 0.1)";
+      closeModalButton.style.color = "#1d1d1d";
+      closeModalButton.style.background = "rgba(0, 0, 0, 0.1)";
 
       modalContent.innerHTML = `
         <div class="modal-header">
           <h2>Scegli il veicolo</h2>
-
-          <p>
-            Sono stati trovati più risultati.
-          </p>
+          <p>Sono stati trovati più risultati.</p>
         </div>
 
         <div class="modal-body">
-          <div
-            id="choiceList"
-            class="choice-list"
-          ></div>
+          <div id="choiceList" class="choice-list"></div>
         </div>
       `;
 
-      const choiceList =
-        document.getElementById(
-          "choiceList"
-        );
+      const choiceList = document.getElementById("choiceList");
 
-      results.forEach(
-        function (vehicle) {
-          const button =
-            document.createElement("button");
+      results.forEach(function (vehicle) {
+        const button = document.createElement("button");
 
-          button.type = "button";
-          button.className = "choice-button";
+        button.type = "button";
+        button.className = "choice-button";
 
-          button.innerHTML = `
-            <span class="choice-name">
-              ${escapeHTML(
-                getValue(vehicle, "Nome") ||
-                "Veicolo senza nome"
-              )}
-            </span>
+        button.innerHTML = `
+          <span class="choice-name">
+            ${escapeHTML(
+              getValue(vehicle, "Nome") || "Veicolo senza nome"
+            )}
+          </span>
 
-            <span class="choice-plate">
-              Targa:
-              ${escapeHTML(
-                getValue(vehicle, "Targa") ||
-                "non disponibile"
-              )}
-            </span>
-          `;
+          <span class="choice-plate">
+            Targa:
+            ${escapeHTML(
+              getValue(vehicle, "Targa") || "non disponibile"
+            )}
+          </span>
+        `;
 
-          button.addEventListener(
-            "click",
-            function () {
-              showVehicleDetails(vehicle);
-            }
-          );
+        button.addEventListener("click", function () {
+          showVehicleDetails(vehicle);
+        });
 
-          choiceList.appendChild(button);
-        }
-      );
+        choiceList.appendChild(button);
+      });
 
       openModal();
     }
 
     function showVehicleDetails(vehicle) {
-      const overallStatus =
-        getOverallStatus(vehicle);
+      const overallStatus = getOverallStatus(vehicle);
 
       const statusSymbol =
         overallStatus.level === "green"
@@ -1116,92 +945,65 @@
               : "?";
 
       modalContainer.className =
-        "modal " +
-        overallStatus.popupClass;
+        "modal " + overallStatus.popupClass;
 
-      closeModalButton.style.color =
-        "#ffffff";
-
+      closeModalButton.style.color = "#ffffff";
       closeModalButton.style.background =
         "rgba(255, 255, 255, 0.22)";
 
-      const dateRows =
-        DATE_COLUMNS.map(
-          function (columnName) {
-            const value =
-              getValue(
-                vehicle,
-                columnName
-              );
+      const dateRows = DATE_COLUMNS.map(function (columnName) {
+        const value = getValue(vehicle, columnName);
+        const status = evaluateDate(value);
 
-            const status =
-              evaluateDate(value);
+        return createDetailRow(
+          columnName,
+          value || "N/A",
+          status.description,
+          status.level
+        );
+      }).join("");
 
-            return createDetailRow(
-              columnName,
-              value || "N/A",
-              status.description,
-              status.level
-            );
-          }
-        ).join("");
-
-      const telepass =
-        getValue(vehicle, "Telepass");
-
-      const telepassStatus =
-        evaluateTelepass(telepass);
+      const telepass = getValue(vehicle, "Telepass");
+      const telepassStatus = evaluateTelepass(telepass);
 
       modalContent.innerHTML = `
         <div class="vehicle-popup-header">
-
           <h2>
             ${escapeHTML(
-              getValue(vehicle, "Nome") ||
-              "Veicolo senza nome"
+              getValue(vehicle, "Nome") || "Veicolo senza nome"
             )}
           </h2>
 
           <p class="vehicle-popup-subtitle">
             Targa:
             ${escapeHTML(
-              getValue(vehicle, "Targa") ||
-              "non disponibile"
+              getValue(vehicle, "Targa") || "non disponibile"
             )}
           </p>
 
           <div class="vehicle-status-summary">
-
             <span class="status-symbol">
               ${statusSymbol}
             </span>
 
-            ${escapeHTML(
-              overallStatus.fullLabel
-            )}
-
+            ${escapeHTML(overallStatus.fullLabel)}
           </div>
-
         </div>
 
         <div class="modal-body">
-
           <div class="details-grid">
-
             ${createDetailRow(
               "Targa",
-              getValue(vehicle, "Targa")
+              getValue(vehicle, "Targa") || "N/A"
             )}
 
             ${dateRows}
 
             ${createTelepassRow(
-              telepass,
+              telepass || "N/A",
               telepassStatus
             )}
-
           </div>
-
         </div>
       `;
 
@@ -1216,13 +1018,11 @@
     ) {
       return `
         <div class="detail-row">
-
           <div class="detail-label">
             ${escapeHTML(label)}
           </div>
 
           <div class="detail-value">
-
             ${escapeHTML(value || "N/A")}
 
             ${
@@ -1234,100 +1034,71 @@
                 `
                 : ""
             }
-
           </div>
-
         </div>
       `;
     }
 
-    function createTelepassRow(
-      value,
-      status
-    ) {
+    function createTelepassRow(value, status) {
       return `
         <div class="detail-row">
-
           <div class="detail-label">
             Telepass
           </div>
 
-          <div
-            class="detail-value telepass-detail ${status.level}"
-          >
+          <div class="detail-value telepass-detail ${status.level}">
             ${escapeHTML(value || "N/A")}
           </div>
-
         </div>
       `;
     }
 
     function getOverallStatus(vehicle) {
-      const statuses =
-        DATE_COLUMNS.map(
-          function (columnName) {
-            return evaluateDate(
-              getValue(
-                vehicle,
-                columnName
-              )
-            );
-          }
-        );
+      const statuses = DATE_COLUMNS.map(function (columnName) {
+        return evaluateDate(getValue(vehicle, columnName));
+      });
 
       if (
-        statuses.some(
-          function (status) {
-            return status.level === "red";
-          }
-        )
+        statuses.some(function (status) {
+          return status.level === "red";
+        })
       ) {
         return {
           level: "red",
           popupClass: "red-popup",
           shortLabel: "Scadenza superata",
-          fullLabel:
-            "Almeno una scadenza è superata"
+          fullLabel: "Almeno una scadenza è superata"
         };
       }
 
       if (
-        statuses.some(
-          function (status) {
-            return status.level === "yellow";
-          }
-        )
+        statuses.some(function (status) {
+          return status.level === "yellow";
+        })
       ) {
         return {
           level: "yellow",
           popupClass: "yellow-popup",
           shortLabel: "In scadenza",
-          fullLabel:
-            "Almeno una scadenza è prossima"
+          fullLabel: "Almeno una scadenza è prossima"
         };
       }
 
-      const validStatuses =
-        statuses.filter(
-          function (status) {
-            return status.level !== "neutral";
-          }
-        );
+      const validStatuses = statuses.filter(function (status) {
+        return status.level !== "neutral";
+      });
 
       if (
         validStatuses.length > 0 &&
-        validStatuses.every(
-          function (status) {
-            return status.level === "green";
-          }
-        )
+        validStatuses.every(function (status) {
+          return status.level === "green";
+        })
       ) {
         return {
           level: "green",
           popupClass: "green-popup",
           shortLabel: "Regolare",
-          fullLabel:
-            "Tutte le scadenze disponibili sono regolari"
+          fullLabel: "Tutte le scadenze disponibili sono regolari"
         };
       }
 
@@ -1335,18 +1106,15 @@
         level: "neutral",
         popupClass: "neutral-popup",
         shortLabel: "Da verificare",
-        fullLabel:
-          "Alcuni dati devono essere verificati"
+        fullLabel: "Alcuni dati devono essere verificati"
       };
     }
 
     function evaluateTelepass(value) {
-      const normalized =
-        normalizeText(value);
+      const normalized = normalizeText(value);
 
       if (
         normalized === "si" ||
-        normalized === "sì" ||
         normalized === "yes"
       ) {
         return {
@@ -1354,9 +1122,7 @@
         };
       }
 
-      if (
-        normalized === "no"
-      ) {
+      if (normalized === "no") {
         return {
           level: "red"
         };
@@ -1368,15 +1134,17 @@
     }
 
     function evaluateDate(rawDate) {
+      const normalized = normalizeText(rawDate);
+
       if (
         !rawDate ||
-        normalizeText(rawDate) === "n a" ||
-        normalizeText(rawDate) === "na"
+        normalized === "n a" ||
+        normalized === "na" ||
+        normalized === "non disponibile"
       ) {
         return {
           level: "neutral",
-          description:
-            "Data non disponibile."
+          description: "Data non disponibile."
         };
       }
 
@@ -1385,37 +1153,27 @@
       if (!date) {
         return {
           level: "neutral",
-          description:
-            "Data non riconosciuta."
+          description: "Data non riconosciuta."
         };
       }
 
       const today = new Date();
-
       today.setHours(0, 0, 0, 0);
       date.setHours(0, 0, 0, 0);
 
-      const differenceInDays =
-        Math.round(
-          (
-            date.getTime() -
-            today.getTime()
-          ) /
-          86400000
-        );
+      const differenceInDays = Math.round(
+        (date.getTime() - today.getTime()) / 86400000
+      );
 
       if (differenceInDays < 0) {
-        const expiredDays =
-          Math.abs(differenceInDays);
+        const expiredDays = Math.abs(differenceInDays);
 
         return {
           level: "red",
           description:
             expiredDays === 1
               ? "Scaduta da 1 giorno."
-              : "Scaduta da " +
-                expiredDays +
-                " giorni."
+              : "Scaduta da " + expiredDays + " giorni."
         };
       }
 
@@ -1426,10 +1184,7 @@
         };
       }
 
-      if (
-        differenceInDays <=
-        WARNING_DAYS
-      ) {
+      if (differenceInDays <= WARNING_DAYS) {
         return {
           level: "yellow",
           description:
@@ -1445,8 +1200,8 @@
         level: "green",
         description:
           differenceInDays === 1
-            ? "Attiva. Manca 1 giorno."
-            : "Attiva. Mancano " +
+            ? "Valida. Manca 1 giorno."
+            : "Valida. Mancano " +
               differenceInDays +
               " giorni."
       };
@@ -1457,30 +1212,18 @@
         return null;
       }
 
-      const text =
-        String(value).trim();
+      const text = String(value).trim();
 
-      const italianMatch =
-        text.match(
-          /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/
-        );
+      const italianMatch = text.match(
+        /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/
+      );
 
       if (italianMatch) {
-        const day =
-          Number(italianMatch[1]);
+        const day = Number(italianMatch[1]);
+        const month = Number(italianMatch[2]);
+        const year = Number(italianMatch[3]);
 
-        const month =
-          Number(italianMatch[2]);
-
-        const year =
-          Number(italianMatch[3]);
-
-        const date =
-          new Date(
-            year,
-            month - 1,
-            day
-          );
+        const date = new Date(year, month - 1, day);
 
         if (
           date.getFullYear() === year &&
@@ -1491,27 +1234,16 @@
         }
       }
 
-      const isoMatch =
-        text.match(
-          /^(\d{4})-(\d{1,2})-(\d{1,2})$/
-        );
+      const isoMatch = text.match(
+        /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+      );
 
       if (isoMatch) {
-        const year =
-          Number(isoMatch[1]);
+        const year = Number(isoMatch[1]);
+        const month = Number(isoMatch[2]);
+        const day = Number(isoMatch[3]);
 
-        const month =
-          Number(isoMatch[2]);
-
-        const day =
-          Number(isoMatch[3]);
-
-        const date =
-          new Date(
-            year,
-            month - 1,
-            day
-          );
+        const date = new Date(year, month - 1, day);
 
         if (
           date.getFullYear() === year &&
@@ -1525,26 +1257,14 @@
       return null;
     }
 
-    function getValue(
-      vehicle,
-      requestedKey
-    ) {
-      const normalizedRequestedKey =
-        normalizeHeader(requestedKey);
+    function getValue(vehicle, requestedKey) {
+      const normalizedRequestedKey = normalizeHeader(requestedKey);
 
-      const realKey =
-        Object.keys(vehicle).find(
-          function (key) {
-            return (
-              normalizeHeader(key) ===
-              normalizedRequestedKey
-            );
-          }
-        );
+      const realKey = Object.keys(vehicle).find(function (key) {
+        return normalizeHeader(key) === normalizedRequestedKey;
+      });
 
-      return realKey
-        ? vehicle[realKey]
-        : "";
+      return realKey ? vehicle[realKey] : "";
     }
 
     function cleanHeader(value) {
@@ -1554,22 +1274,15 @@
     }
 
     function normalizeHeader(value) {
-      return normalizeText(value)
-        .replace(/\s+/g, "");
+      return normalizeText(value).replace(/\s+/g, "");
     }
 
     function normalizeText(value) {
       return String(value || "")
         .normalize("NFD")
-        .replace(
-          /[\u0300-\u036f]/g,
-          ""
-        )
+        .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
-        .replace(
-          /[^a-z0-9]+/g,
-          " "
-        )
+        .replace(/[^a-z0-9]+/g, " ")
         .replace(/\s+/g, " ")
         .trim();
     }
@@ -1581,16 +1294,9 @@
       let cell = "";
       let insideQuotes = false;
 
-      for (
-        let index = 0;
-        index < csvText.length;
-        index++
-      ) {
-        const character =
-          csvText[index];
-
-        const nextCharacter =
-          csvText[index + 1];
+      for (let index = 0; index < csvText.length; index++) {
+        const character = csvText[index];
+        const nextCharacter = csvText[index + 1];
 
         if (
           character === '"' &&
@@ -1599,25 +1305,16 @@
         ) {
           cell += '"';
           index++;
-
-        } else if (
-          character === '"'
-        ) {
-          insideQuotes =
-            !insideQuotes;
-
+        } else if (character === '"') {
+          insideQuotes = !insideQuotes;
         } else if (
           character === "," &&
           !insideQuotes
         ) {
           row.push(cell);
           cell = "";
-
         } else if (
-          (
-            character === "\n" ||
-            character === "\r"
-          ) &&
+          (character === "\n" || character === "\r") &&
           !insideQuotes
         ) {
           if (
@@ -1630,29 +1327,21 @@
           row.push(cell);
 
           if (
-            row.some(
-              function (value) {
-                return (
-                  String(value || "").trim() !== ""
-                );
-              }
-            )
+            row.some(function (value) {
+              return String(value || "").trim() !== "";
+            })
           ) {
             rows.push(row);
           }
 
           row = [];
           cell = "";
-
         } else {
           cell += character;
         }
       }
 
-      if (
-        cell !== "" ||
-        row.length > 0
-      ) {
+      if (cell !== "" || row.length > 0) {
         row.push(cell);
         rows.push(row);
       }
@@ -1684,6 +1373,5 @@
         .replaceAll("'", "&#039;");
     }
   </script>
-
 </body>
 </html>
