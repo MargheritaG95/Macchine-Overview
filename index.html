@@ -29,7 +29,7 @@
     }
 
     .page {
-      width: min(1100px, calc(100% - 30px));
+      width: min(1250px, calc(100% - 30px));
       margin: 0 auto;
       padding: 35px 0 60px;
     }
@@ -111,12 +111,12 @@
       font-size: 14px;
     }
 
-    .message.error {
-      color: #ffaaa5;
-    }
-
     .message.success {
       color: #a9e8bb;
+    }
+
+    .message.error {
+      color: #ffaaa5;
     }
 
     .section {
@@ -149,13 +149,13 @@
 
     table {
       width: 100%;
-      min-width: 950px;
+      min-width: 1100px;
       border-collapse: collapse;
     }
 
     th,
     td {
-      padding: 15px 17px;
+      padding: 15px 14px;
       border-bottom: 1px solid #e8e4dc;
       text-align: left;
       vertical-align: middle;
@@ -166,6 +166,7 @@
       color: #555555;
       font-size: 12px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     tbody tr:hover {
@@ -190,7 +191,7 @@
     }
 
     .date-text {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
       white-space: nowrap;
     }
@@ -208,6 +209,24 @@
     }
 
     .date-text.neutral {
+      color: #777777;
+    }
+
+    .telepass-text {
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .telepass-text.green {
+      color: #17833c;
+    }
+
+    .telepass-text.red {
+      color: #c62828;
+    }
+
+    .telepass-text.neutral {
       color: #777777;
     }
 
@@ -264,7 +283,7 @@
 
     .modal {
       position: relative;
-      width: min(680px, 100%);
+      width: min(720px, 100%);
       max-height: 88vh;
       overflow-y: auto;
       overflow-x: hidden;
@@ -381,11 +400,6 @@
       color: #ffffff;
       font-size: 25px;
       cursor: pointer;
-      backdrop-filter: blur(5px);
-    }
-
-    .close-button:hover {
-      background: rgba(255, 255, 255, 0.35);
     }
 
     .details-grid {
@@ -395,7 +409,6 @@
     }
 
     .detail-row {
-      display: block;
       padding: 16px;
       border: 1px solid rgba(0, 0, 0, 0.08);
       border-radius: 14px;
@@ -439,6 +452,18 @@
     }
 
     .date-note.neutral {
+      color: #777777;
+    }
+
+    .telepass-detail.green {
+      color: #17833c;
+    }
+
+    .telepass-detail.red {
+      color: #c62828;
+    }
+
+    .telepass-detail.neutral {
       color: #777777;
     }
 
@@ -530,8 +555,8 @@
       <h1>Controllo veicoli</h1>
 
       <p class="description">
-        Cerca una vettura per nome o targa.
-        Puoi inserire anche una parte del nome, per esempio “Abarth”.
+        Cerca un veicolo per nome o targa.
+        Puoi inserire anche soltanto una parte del nome.
       </p>
 
       <div class="search-container">
@@ -584,15 +609,16 @@
               <th>Targa</th>
               <th>Assicurazione</th>
               <th>Revisione</th>
-              <th>Documento</th>
-              <th>Area B &amp; C</th>
+              <th>Tagliando</th>
+              <th>Bollo</th>
+              <th>Telepass</th>
               <th>Stato</th>
             </tr>
           </thead>
 
           <tbody id="vehicleTableBody">
             <tr>
-              <td colspan="7" class="empty-row">
+              <td colspan="8" class="empty-row">
                 Caricamento dati...
               </td>
             </tr>
@@ -633,9 +659,16 @@
 
   <script>
     const SHEET_CSV_URL =
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vT8TlSxIhvznxeUk6AUEDFHQcChXbhUnUYYxU3Ghz5eYr8kIZrDID4EsYl4jw0oWbYMjTVjjmjmec22/pub?output=csv";
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSfgPbhg4N4ZW2vR0NsbdLcEyrKmT1qTAp2sMIN_wLJQEl2maJRJavK58lCfs-xaP2a9sxWGku2OBz/pub?output=csv";
 
     const WARNING_DAYS = 30;
+
+    const DATE_COLUMNS = [
+      "Assicurazione",
+      "Revisione",
+      "Tagliando",
+      "Bollo"
+    ];
 
     let vehicles = [];
 
@@ -666,15 +699,9 @@
     const closeModalButton =
       document.getElementById("closeModalButton");
 
-    window.addEventListener(
-      "load",
-      loadVehicles
-    );
+    window.addEventListener("load", loadVehicles);
 
-    searchButton.addEventListener(
-      "click",
-      runSearch
-    );
+    searchButton.addEventListener("click", runSearch);
 
     searchInput.addEventListener(
       "keydown",
@@ -710,8 +737,7 @@
 
     async function loadVehicles() {
       message.className = "message";
-      message.textContent =
-        "Caricamento veicoli...";
+      message.textContent = "Caricamento veicoli...";
 
       searchButton.disabled = true;
 
@@ -730,8 +756,7 @@
           );
         }
 
-        const csvText =
-          await response.text();
+        const csvText = await response.text();
 
         if (
           !csvText ||
@@ -743,8 +768,7 @@
           );
         }
 
-        const rows =
-          parseCSV(csvText);
+        const rows = parseCSV(csvText);
 
         if (rows.length < 2) {
           throw new Error(
@@ -752,12 +776,11 @@
           );
         }
 
-        const headers =
-          rows[0].map(
-            function (header) {
-              return cleanHeader(header);
-            }
-          );
+        const headers = rows[0].map(
+          function (header) {
+            return cleanHeader(header);
+          }
+        );
 
         vehicles = rows
           .slice(1)
@@ -765,9 +788,7 @@
             function (row) {
               return row.some(
                 function (cell) {
-                  return (
-                    String(cell || "").trim() !== ""
-                  );
+                  return String(cell || "").trim() !== "";
                 }
               );
             }
@@ -779,9 +800,7 @@
               headers.forEach(
                 function (header, index) {
                   vehicle[header] =
-                    String(
-                      row[index] || ""
-                    ).trim();
+                    String(row[index] || "").trim();
                 }
               );
 
@@ -799,12 +818,10 @@
 
         searchButton.disabled = false;
 
-        message.className =
-          "message success";
+        message.className = "message success";
 
         message.textContent =
-          vehicles.length +
-          " veicoli caricati.";
+          vehicles.length + " veicoli caricati.";
 
       } catch (error) {
         console.error(
@@ -814,21 +831,17 @@
 
         vehicles = [];
 
-        searchButton.disabled = true;
-
-        vehicleCount.textContent =
-          "0 veicoli";
+        vehicleCount.textContent = "0 veicoli";
 
         vehicleTableBody.innerHTML = `
           <tr>
-            <td colspan="7" class="empty-row">
+            <td colspan="8" class="empty-row">
               Impossibile caricare la lista dei veicoli.
             </td>
           </tr>
         `;
 
-        message.className =
-          "message error";
+        message.className = "message error";
 
         message.textContent =
           "Errore nel caricamento dei dati. Controlla che il foglio sia pubblicato.";
@@ -846,23 +859,35 @@
           const overallStatus =
             getOverallStatus(vehicle);
 
-          const insuranceDate =
-            getValue(
-              vehicle,
-              "Assicurazione"
-            );
+          const insurance =
+            getValue(vehicle, "Assicurazione");
 
-          const inspectionDate =
-            getValue(
-              vehicle,
-              "Revisione"
-            );
+          const revision =
+            getValue(vehicle, "Revisione");
+
+          const service =
+            getValue(vehicle, "Tagliando");
+
+          const tax =
+            getValue(vehicle, "Bollo");
+
+          const telepass =
+            getValue(vehicle, "Telepass");
 
           const insuranceStatus =
-            evaluateDate(insuranceDate);
+            evaluateDate(insurance);
 
-          const inspectionStatus =
-            evaluateDate(inspectionDate);
+          const revisionStatus =
+            evaluateDate(revision);
+
+          const serviceStatus =
+            evaluateDate(service);
+
+          const taxStatus =
+            evaluateDate(tax);
+
+          const telepassStatus =
+            evaluateTelepass(telepass);
 
           const row =
             document.createElement("tr");
@@ -875,7 +900,8 @@
                 data-index="${index}"
               >
                 ${escapeHTML(
-                  getValue(vehicle, "Nome")
+                  getValue(vehicle, "Nome") ||
+                  "Veicolo senza nome"
                 )}
               </button>
             </td>
@@ -888,80 +914,63 @@
             </td>
 
             <td>
-              <span
-                class="date-text ${insuranceStatus.level}"
-              >
-                ${escapeHTML(
-                  insuranceDate || "—"
-                )}
+              <span class="date-text ${insuranceStatus.level}">
+                ${escapeHTML(insurance || "—")}
               </span>
             </td>
 
             <td>
-              <span
-                class="date-text ${inspectionStatus.level}"
-              >
-                ${escapeHTML(
-                  inspectionDate || "—"
-                )}
+              <span class="date-text ${revisionStatus.level}">
+                ${escapeHTML(revision || "—")}
               </span>
             </td>
 
             <td>
-              ${escapeHTML(
-                getValue(
-                  vehicle,
-                  "Documento"
-                ) || "—"
-              )}
+              <span class="date-text ${serviceStatus.level}">
+                ${escapeHTML(service || "—")}
+              </span>
             </td>
 
             <td>
-              ${escapeHTML(
-                getAreaValue(vehicle) ||
-                "—"
-              )}
+              <span class="date-text ${taxStatus.level}">
+                ${escapeHTML(tax || "—")}
+              </span>
             </td>
 
             <td>
-              <span
-                class="status-pill ${overallStatus.level}"
-              >
-                ${escapeHTML(
-                  overallStatus.shortLabel
-                )}
+              <span class="telepass-text ${telepassStatus.level}">
+                ${escapeHTML(telepass || "—")}
+              </span>
+            </td>
+
+            <td>
+              <span class="status-pill ${overallStatus.level}">
+                ${escapeHTML(overallStatus.shortLabel)}
               </span>
             </td>
           `;
 
-          vehicleTableBody.appendChild(
-            row
-          );
+          vehicleTableBody.appendChild(row);
         }
       );
 
-      const buttons =
-        document.querySelectorAll(
-          ".vehicle-name-button"
-        );
+      document
+        .querySelectorAll(".vehicle-name-button")
+        .forEach(
+          function (button) {
+            button.addEventListener(
+              "click",
+              function () {
+                const index =
+                  Number(button.dataset.index);
 
-      buttons.forEach(
-        function (button) {
-          button.addEventListener(
-            "click",
-            function () {
-              const index =
-                Number(
-                  button.dataset.index
+                showVehicleDetails(
+                  vehicles[index]
                 );
-
-              showVehicleDetails(
-                vehicles[index]
-              );
-            }
-          );
-        }
-      );
+              }
+            );
+          }
+        );
     }
 
     function runSearch() {
@@ -974,9 +983,7 @@
       }
 
       const query =
-        normalizeText(
-          searchInput.value
-        );
+        normalizeText(searchInput.value);
 
       if (!query) {
         showError(
@@ -986,42 +993,31 @@
         return;
       }
 
-      const results =
-        vehicles.filter(
-          function (vehicle) {
-            const name =
-              normalizeText(
-                getValue(
-                  vehicle,
-                  "Nome"
-                )
-              );
-
-            const plate =
-              normalizeText(
-                getValue(
-                  vehicle,
-                  "Targa"
-                )
-              );
-
-            return (
-              name.includes(query) ||
-              plate.includes(query)
+      const results = vehicles.filter(
+        function (vehicle) {
+          const name =
+            normalizeText(
+              getValue(vehicle, "Nome")
             );
-          }
-        );
+
+          const plate =
+            normalizeText(
+              getValue(vehicle, "Targa")
+            );
+
+          return (
+            name.includes(query) ||
+            plate.includes(query)
+          );
+        }
+      );
 
       if (results.length === 0) {
-        showError(
-          "Nessun veicolo trovato."
-        );
-
+        showError("Nessun veicolo trovato.");
         return;
       }
 
-      message.className =
-        "message success";
+      message.className = "message success";
 
       message.textContent =
         results.length === 1
@@ -1030,19 +1026,14 @@
             " veicoli trovati.";
 
       if (results.length === 1) {
-        showVehicleDetails(
-          results[0]
-        );
+        showVehicleDetails(results[0]);
       } else {
-        showVehicleChoice(
-          results
-        );
+        showVehicleChoice(results);
       }
     }
 
     function showVehicleChoice(results) {
-      modalContainer.className =
-        "modal";
+      modalContainer.className = "modal";
 
       closeModalButton.style.color =
         "#1d1d1d";
@@ -1075,32 +1066,23 @@
       results.forEach(
         function (vehicle) {
           const button =
-            document.createElement(
-              "button"
-            );
+            document.createElement("button");
 
           button.type = "button";
-
-          button.className =
-            "choice-button";
+          button.className = "choice-button";
 
           button.innerHTML = `
             <span class="choice-name">
               ${escapeHTML(
-                getValue(
-                  vehicle,
-                  "Nome"
-                )
+                getValue(vehicle, "Nome") ||
+                "Veicolo senza nome"
               )}
             </span>
 
             <span class="choice-plate">
               Targa:
               ${escapeHTML(
-                getValue(
-                  vehicle,
-                  "Targa"
-                ) ||
+                getValue(vehicle, "Targa") ||
                 "non disponibile"
               )}
             </span>
@@ -1109,15 +1091,11 @@
           button.addEventListener(
             "click",
             function () {
-              showVehicleDetails(
-                vehicle
-              );
+              showVehicleDetails(vehicle);
             }
           );
 
-          choiceList.appendChild(
-            button
-          );
+          choiceList.appendChild(button);
         }
       );
 
@@ -1125,24 +1103,6 @@
     }
 
     function showVehicleDetails(vehicle) {
-      const insurance =
-        getValue(
-          vehicle,
-          "Assicurazione"
-        );
-
-      const inspection =
-        getValue(
-          vehicle,
-          "Revisione"
-        );
-
-      const insuranceStatus =
-        evaluateDate(insurance);
-
-      const inspectionStatus =
-        evaluateDate(inspection);
-
       const overallStatus =
         getOverallStatus(vehicle);
 
@@ -1165,25 +1125,47 @@
       closeModalButton.style.background =
         "rgba(255, 255, 255, 0.22)";
 
+      const dateRows =
+        DATE_COLUMNS.map(
+          function (columnName) {
+            const value =
+              getValue(
+                vehicle,
+                columnName
+              );
+
+            const status =
+              evaluateDate(value);
+
+            return createDetailRow(
+              columnName,
+              value || "N/A",
+              status.description,
+              status.level
+            );
+          }
+        ).join("");
+
+      const telepass =
+        getValue(vehicle, "Telepass");
+
+      const telepassStatus =
+        evaluateTelepass(telepass);
+
       modalContent.innerHTML = `
         <div class="vehicle-popup-header">
 
           <h2>
             ${escapeHTML(
-              getValue(
-                vehicle,
-                "Nome"
-              )
+              getValue(vehicle, "Nome") ||
+              "Veicolo senza nome"
             )}
           </h2>
 
           <p class="vehicle-popup-subtitle">
             Targa:
             ${escapeHTML(
-              getValue(
-                vehicle,
-                "Targa"
-              ) ||
+              getValue(vehicle, "Targa") ||
               "non disponibile"
             )}
           </p>
@@ -1208,45 +1190,14 @@
 
             ${createDetailRow(
               "Targa",
-              getValue(
-                vehicle,
-                "Targa"
-              )
+              getValue(vehicle, "Targa")
             )}
 
-            ${createDetailRow(
-              "Assicurazione",
-              insurance,
-              insuranceStatus.description,
-              insuranceStatus.level
-            )}
+            ${dateRows}
 
-            ${createDetailRow(
-              "Revisione",
-              inspection,
-              inspectionStatus.description,
-              inspectionStatus.level
-            )}
-
-            ${createDetailRow(
-              "Documento",
-              getValue(
-                vehicle,
-                "Documento"
-              )
-            )}
-
-            ${createDetailRow(
-              "Area B & C",
-              getAreaValue(vehicle)
-            )}
-
-            ${createDetailRow(
-              "Note",
-              getValue(
-                vehicle,
-                "Note"
-              )
+            ${createTelepassRow(
+              telepass,
+              telepassStatus
             )}
 
           </div>
@@ -1263,10 +1214,6 @@
       note = "",
       noteLevel = "neutral"
     ) {
-      if (!value) {
-        return "";
-      }
-
       return `
         <div class="detail-row">
 
@@ -1276,14 +1223,12 @@
 
           <div class="detail-value">
 
-            ${escapeHTML(value)}
+            ${escapeHTML(value || "N/A")}
 
             ${
               note
                 ? `
-                  <span
-                    class="date-note ${noteLevel}"
-                  >
+                  <span class="date-note ${noteLevel}">
                     ${escapeHTML(note)}
                   </span>
                 `
@@ -1296,41 +1241,51 @@
       `;
     }
 
+    function createTelepassRow(
+      value,
+      status
+    ) {
+      return `
+        <div class="detail-row">
+
+          <div class="detail-label">
+            Telepass
+          </div>
+
+          <div
+            class="detail-value telepass-detail ${status.level}"
+          >
+            ${escapeHTML(value || "N/A")}
+          </div>
+
+        </div>
+      `;
+    }
+
     function getOverallStatus(vehicle) {
-      const insuranceStatus =
-        evaluateDate(
-          getValue(
-            vehicle,
-            "Assicurazione"
-          )
+      const statuses =
+        DATE_COLUMNS.map(
+          function (columnName) {
+            return evaluateDate(
+              getValue(
+                vehicle,
+                columnName
+              )
+            );
+          }
         );
-
-      const inspectionStatus =
-        evaluateDate(
-          getValue(
-            vehicle,
-            "Revisione"
-          )
-        );
-
-      const statuses = [
-        insuranceStatus,
-        inspectionStatus
-      ];
 
       if (
         statuses.some(
           function (status) {
-            return (
-              status.level === "red"
-            );
+            return status.level === "red";
           }
         )
       ) {
         return {
           level: "red",
           popupClass: "red-popup",
-          shortLabel: "Scaduto",
+          shortLabel: "Scadenza superata",
           fullLabel:
             "Almeno una scadenza è superata"
         };
@@ -1339,9 +1294,7 @@
       if (
         statuses.some(
           function (status) {
-            return (
-              status.level === "yellow"
-            );
+            return status.level === "yellow";
           }
         )
       ) {
@@ -1354,21 +1307,27 @@
         };
       }
 
-      if (
-        statuses.every(
+      const validStatuses =
+        statuses.filter(
           function (status) {
-            return (
-              status.level === "green"
-            );
+            return status.level !== "neutral";
+          }
+        );
+
+      if (
+        validStatuses.length > 0 &&
+        validStatuses.every(
+          function (status) {
+            return status.level === "green";
           }
         )
       ) {
         return {
           level: "green",
           popupClass: "green-popup",
-          shortLabel: "Attive",
+          shortLabel: "Regolare",
           fullLabel:
-            "Assicurazione e revisione attive"
+            "Tutte le scadenze disponibili sono regolari"
         };
       }
 
@@ -1377,41 +1336,67 @@
         popupClass: "neutral-popup",
         shortLabel: "Da verificare",
         fullLabel:
-          "Dati di scadenza da verificare"
+          "Alcuni dati devono essere verificati"
+      };
+    }
+
+    function evaluateTelepass(value) {
+      const normalized =
+        normalizeText(value);
+
+      if (
+        normalized === "si" ||
+        normalized === "sì" ||
+        normalized === "yes"
+      ) {
+        return {
+          level: "green"
+        };
+      }
+
+      if (
+        normalized === "no"
+      ) {
+        return {
+          level: "red"
+        };
+      }
+
+      return {
+        level: "neutral"
       };
     }
 
     function evaluateDate(rawDate) {
-      const date =
-        parseDate(rawDate);
+      if (
+        !rawDate ||
+        normalizeText(rawDate) === "n a" ||
+        normalizeText(rawDate) === "na"
+      ) {
+        return {
+          level: "neutral",
+          description:
+            "Data non disponibile."
+        };
+      }
+
+      const date = parseDate(rawDate);
 
       if (!date) {
         return {
           level: "neutral",
           description:
-            "Data non disponibile o non riconosciuta."
+            "Data non riconosciuta."
         };
       }
 
-      const today =
-        new Date();
+      const today = new Date();
 
-      today.setHours(
-        0,
-        0,
-        0,
-        0
-      );
-
-      date.setHours(
-        0,
-        0,
-        0,
-        0
-      );
+      today.setHours(0, 0, 0, 0);
+      date.setHours(0, 0, 0, 0);
 
       const differenceInDays =
-        Math.ceil(
+        Math.round(
           (
             date.getTime() -
             today.getTime()
@@ -1420,14 +1405,24 @@
         );
 
       if (differenceInDays < 0) {
+        const expiredDays =
+          Math.abs(differenceInDays);
+
         return {
           level: "red",
           description:
-            "Scaduta da " +
-            Math.abs(
-              differenceInDays
-            ) +
-            " giorni."
+            expiredDays === 1
+              ? "Scaduta da 1 giorno."
+              : "Scaduta da " +
+                expiredDays +
+                " giorni."
+        };
+      }
+
+      if (differenceInDays === 0) {
+        return {
+          level: "yellow",
+          description: "Scade oggi."
         };
       }
 
@@ -1438,8 +1433,8 @@
         return {
           level: "yellow",
           description:
-            differenceInDays === 0
-              ? "Scade oggi."
+            differenceInDays === 1
+              ? "Scade domani."
               : "In scadenza tra " +
                 differenceInDays +
                 " giorni."
@@ -1449,9 +1444,11 @@
       return {
         level: "green",
         description:
-          "Attiva. Scade tra " +
-          differenceInDays +
-          " giorni."
+          differenceInDays === 1
+            ? "Attiva. Manca 1 giorno."
+            : "Attiva. Mancano " +
+              differenceInDays +
+              " giorni."
       };
     }
 
@@ -1470,19 +1467,13 @@
 
       if (italianMatch) {
         const day =
-          Number(
-            italianMatch[1]
-          );
+          Number(italianMatch[1]);
 
         const month =
-          Number(
-            italianMatch[2]
-          );
+          Number(italianMatch[2]);
 
         const year =
-          Number(
-            italianMatch[3]
-          );
+          Number(italianMatch[3]);
 
         const date =
           new Date(
@@ -1493,23 +1484,42 @@
 
         if (
           date.getFullYear() === year &&
-          date.getMonth() ===
-            month - 1 &&
+          date.getMonth() === month - 1 &&
           date.getDate() === day
         ) {
           return date;
         }
       }
 
-      const automaticDate =
-        new Date(text);
+      const isoMatch =
+        text.match(
+          /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+        );
 
-      if (
-        !Number.isNaN(
-          automaticDate.getTime()
-        )
-      ) {
-        return automaticDate;
+      if (isoMatch) {
+        const year =
+          Number(isoMatch[1]);
+
+        const month =
+          Number(isoMatch[2]);
+
+        const day =
+          Number(isoMatch[3]);
+
+        const date =
+          new Date(
+            year,
+            month - 1,
+            day
+          );
+
+        if (
+          date.getFullYear() === year &&
+          date.getMonth() === month - 1 &&
+          date.getDate() === day
+        ) {
+          return date;
+        }
       }
 
       return null;
@@ -1520,14 +1530,10 @@
       requestedKey
     ) {
       const normalizedRequestedKey =
-        normalizeHeader(
-          requestedKey
-        );
+        normalizeHeader(requestedKey);
 
       const realKey =
-        Object.keys(
-          vehicle
-        ).find(
+        Object.keys(vehicle).find(
           function (key) {
             return (
               normalizeHeader(key) ===
@@ -1541,57 +1547,19 @@
         : "";
     }
 
-    function getAreaValue(vehicle) {
-      const possibleNames = [
-        "Area B & C",
-        "Area B&C",
-        "Area B e C",
-        "Area B C"
-      ];
-
-      for (
-        let index = 0;
-        index <
-        possibleNames.length;
-        index++
-      ) {
-        const value =
-          getValue(
-            vehicle,
-            possibleNames[index]
-          );
-
-        if (value) {
-          return value;
-        }
-      }
-
-      return "";
-    }
-
     function cleanHeader(value) {
-      return String(
-        value || ""
-      )
-        .replace(
-          /^\uFEFF/,
-          ""
-        )
+      return String(value || "")
+        .replace(/^\uFEFF/, "")
         .trim();
     }
 
     function normalizeHeader(value) {
       return normalizeText(value)
-        .replace(
-          /\s+/g,
-          ""
-        );
+        .replace(/\s+/g, "");
     }
 
     function normalizeText(value) {
-      return String(
-        value || ""
-      )
+      return String(value || "")
         .normalize("NFD")
         .replace(
           /[\u0300-\u036f]/g,
@@ -1602,10 +1570,7 @@
           /[^a-z0-9]+/g,
           " "
         )
-        .replace(
-          /\s+/g,
-          " "
-        )
+        .replace(/\s+/g, " ")
         .trim();
     }
 
@@ -1618,8 +1583,7 @@
 
       for (
         let index = 0;
-        index <
-        csvText.length;
+        index < csvText.length;
         index++
       ) {
         const character =
@@ -1635,17 +1599,20 @@
         ) {
           cell += '"';
           index++;
+
         } else if (
           character === '"'
         ) {
           insideQuotes =
             !insideQuotes;
+
         } else if (
           character === "," &&
           !insideQuotes
         ) {
           row.push(cell);
           cell = "";
+
         } else if (
           (
             character === "\n" ||
@@ -1666,9 +1633,7 @@
             row.some(
               function (value) {
                 return (
-                  String(
-                    value || ""
-                  ).trim() !== ""
+                  String(value || "").trim() !== ""
                 );
               }
             )
@@ -1678,6 +1643,7 @@
 
           row = [];
           cell = "";
+
         } else {
           cell += character;
         }
@@ -1695,53 +1661,27 @@
     }
 
     function openModal() {
-      modalOverlay.classList.add(
-        "open"
-      );
-
-      document.body.style.overflow =
-        "hidden";
+      modalOverlay.classList.add("open");
+      document.body.style.overflow = "hidden";
     }
 
     function closeModal() {
-      modalOverlay.classList.remove(
-        "open"
-      );
-
-      document.body.style.overflow =
-        "";
+      modalOverlay.classList.remove("open");
+      document.body.style.overflow = "";
     }
 
     function showError(text) {
-      message.className =
-        "message error";
-
-      message.textContent =
-        text;
+      message.className = "message error";
+      message.textContent = text;
     }
 
     function escapeHTML(value) {
       return String(value || "")
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
   </script>
 
